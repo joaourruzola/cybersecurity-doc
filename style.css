@@ -1,0 +1,337 @@
+/* GENERAL STYLES */
+* {
+	margin: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--mainColor: rgb(29 40 58);
+	--secondaryColor: rgba(47, 65, 94, 0.719);
+	--textColor: rgb(248 250 252);
+	--linksColor: rgb(163 163 163);
+	--textLinksColor: rgb(167 243 208);
+}
+
+@media only screen and (max-width: 700px) {
+	body {
+		overflow-x: hidden !important;
+		max-width: 100%;
+	}
+
+	.mobileNavBar {
+		display: flex !important;
+		flex-direction: row;
+		justify-content: space-evenly;
+		align-items: center;
+		width: 100%;
+		height: 5rem;
+		position: fixed;
+		z-index: 3;
+		font-size: 16px;
+	}
+
+	.hambuger-menu {
+		font-size: 32px;
+	}
+
+	.nav-title {
+		padding: 0 !important;
+		margin: 0 !important;
+		width: 100%;
+	}
+
+	.topBar {
+		display: none !important;
+	}
+
+	.sideBar {
+		display: none;
+	}
+
+	.mainContent {
+		margin: 0 !important;
+		width: 100% !important;
+		height: 100% !important;
+		padding: 0 0.75em !important;
+	}
+
+	.cardContainer {
+		width: 100% !important;
+		padding: 0 !important;
+		gap: 0.25em !important;
+	}
+	#backCard {
+		height: 130px;
+		width: 50% !important;
+	}
+	#nextCard {
+		width: 50% !important;
+	}
+}
+
+/* ANIMATIONS */
+@keyframes rainbow-text-simple-animation-rev {
+	0% {
+		background-size: 650%;
+	}
+	40% {
+		background-size: 650%;
+	}
+	100% {
+		background-size: 100%;
+	}
+}
+
+@keyframes rainbow-text-simple-animation {
+	0% {
+		background-size: 100%;
+	}
+	80% {
+		background-size: 650%;
+	}
+	100% {
+		background-size: 650%;
+	}
+}
+
+body {
+	position: static;
+	background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+	background-repeat: repeat;
+	margin: 1px;
+	font-family: "Poppins";
+	font-weight: 400;
+	color: var(--textColor);
+	z-index: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* ESTILO ELEMENTOS GERAL */
+ul {
+	margin: 0;
+	padding: 0.1em 0.75em;
+	list-style-type: none;
+	line-height: 2em;
+}
+
+a {
+	text-decoration: none;
+	color: var(--linksColor);
+	cursor: pointer;
+}
+
+.citation-links {
+	text-decoration: none;
+	color: var(--textColor);
+}
+
+.citation-links:hover {
+	color: var(--textLinksColor);
+}
+
+.text-list {
+	list-style-type: none;
+	margin-left: 1em;
+}
+
+.hidden {
+	display: none;
+}
+
+.selected {
+	color: #2af598;
+}
+
+/* NAVBAR */
+.nav-title-back {
+	position: absolute;
+	background-image: linear-gradient(270deg, #08aeea 0%, #2af598 100%);
+	filter: blur(25px);
+	color: transparent;
+	opacity: 0.3;
+}
+
+.nav-title {
+	cursor: pointer;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	background-color: #08aeea;
+	background-image: linear-gradient(270deg, #08aeea 15%, #2af598 100%);
+	background-size: 100%;
+	background-repeat: repeat;
+	/* Use the text as a mask for the background. */
+	/* This will show the gradient as a text color rather than element bg. */
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	animation: rainbow-text-simple-animation-rev 0.75s ease forwards;
+}
+
+.nav-title:hover {
+	animation: rainbow-text-simple-animation 0.5s ease-in forwards;
+}
+
+.nav-title:hover {
+	animation: rainbow-text-simple-animation 0.5s ease-in forwards;
+}
+
+.topBar {
+	position: fixed;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	height: 5rem;
+	width: 100vw;
+	padding: 0 1em;
+	padding-right: 2em;
+	border-bottom: 3px solid rgba(255, 255, 255, 0.199);
+	background-color: transparent;
+	z-index: 2;
+}
+
+.topSearch {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.topSearch > input {
+	padding: 1.75em;
+	padding-left: 3em;
+	width: 25em;
+	height: 2.25em;
+	border: 1px solid transparent;
+	border-radius: 25px;
+	background-color: #29323c;
+	color: #fff;
+}
+
+input:focus {
+	background-color: #29323c;
+	border: 1px solid #2af598;
+	outline: none;
+}
+
+.topLinks {
+	display: flex;
+	flex-direction: row;
+	gap: 1em;
+}
+
+a:hover {
+	color: #2af59ad0;
+}
+
+/* BLUR EFFECT ON HOVER */
+.blurryTop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 80px;
+	background: transparent;
+	backdrop-filter: blur(15px);
+	z-index: 1;
+}
+
+/* MAIN CONTENT AND SIDEBAR */
+.container {
+	margin: 0;
+}
+
+.sideBar {
+	position: fixed;
+	top: 5rem;
+	height: calc(100% - 5rem);
+	width: 18%;
+	padding: 1.5em 1em;
+	border-right: 3px solid rgba(255, 255, 255, 0.199);
+}
+
+.sideBar > p {
+	margin: 0;
+	padding: 0.5em 0;
+}
+
+.mainContent {
+	position: absolute;
+	top: 5rem;
+	height: calc(100% - 5rem);
+	margin: 0.5% 10% 0.5% 18%;
+	padding: 1.5em 0 0 1.5em;
+}
+
+#topic-title {
+	line-height: 2.5em;
+	font-size: 28px;
+}
+
+.cardContainer {
+	padding: 1em;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	gap: 1em;
+}
+
+.backCard {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 1.55rem;
+	width: 18em;
+	height: 8em;
+	border: 2px solid var(--textColor);
+	border-radius: 25px;
+	background-color: #29323c;
+}
+
+.backCard > h4 {
+	margin: 0;
+}
+
+.backCard > p {
+	text-align: center;
+	margin: 0;
+	font-size: 0.7em;
+}
+
+.nextCard > span {
+	align-self: flex-end;
+}
+
+.nextCard {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 1.55rem;
+	width: 18em;
+	height: 8em;
+	border: 2px solid var(--textColor);
+	border-radius: 25px;
+	background-color: #29323c;
+}
+
+.nextCard > h4 {
+	margin: 0;
+}
+
+.nextCard > p {
+	text-align: center;
+	margin: 0;
+	font-size: 0.7em;
+}
+
+.backCard:hover {
+	background-color: #08aeea1c;
+}
+
+.nextCard:hover {
+	background-color: #08aeea1c;
+}

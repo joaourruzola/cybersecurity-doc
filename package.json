@@ -1,0 +1,11 @@
+{
+	"name": "projeto_extensao",
+	"version": "1.0.0",
+	"description": "security ",
+	"main": "index.js",
+	"scripts": {
+		"live": "live-server"
+	},
+	"author": "",
+	"license": "ISC"
+}

@@ -1,4 +1,6 @@
 const sideMenuItems = document.querySelectorAll("#topic-id");
+const hamburger = document.querySelector(".hambuger-menu");
+const mobileMenu = document.querySelector(".mobileMenu");
 
 try {
 	fetch("topics.json")
@@ -30,6 +32,10 @@ try {
 
 						topicTitle.textContent = matchedTopic.topic_name;
 						topicElement.innerHTML = matchedTopic.text;
+
+						if (screen.width < 780) {
+							mobileMenu.classList.toggle("hidden");
+						}
 
 						if (currentIndex > 0) {
 							renderPreviousContent(
@@ -156,3 +162,8 @@ async function handleClick() {
 		}
 	}
 }
+
+//MOBILE MENU TOGGLE
+hamburger.addEventListener("click", function () {
+	mobileMenu.classList.toggle("hidden");
+});

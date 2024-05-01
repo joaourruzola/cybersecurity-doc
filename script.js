@@ -7,57 +7,10 @@ try {
 		.then((response) => response.json())
 		.then((data) => {
 			sideMenuItems.forEach((topic) => {
-				topic.addEventListener("click", (event, index) => {
-					const clickedItem = event.target;
-
-					const previouslyClickedItem =
-						document.querySelector(".selected");
-					if (previouslyClickedItem) {
-						previouslyClickedItem.classList.remove("selected");
-					}
-
-					clickedItem.classList.add("selected");
-
-					const matchedTopic = data.topics.find(
-						(topic) => topic.topic_name === clickedItem.innerText
-					);
-
-					if (matchedTopic) {
-						const currentIndex = data.topics.indexOf(matchedTopic);
-
-						const topicElement =
-							document.getElementById("topic-text");
-						const topicTitle =
-							document.getElementById("topic-title");
-
-						topicTitle.textContent = matchedTopic.topic_name;
-						topicElement.innerHTML = matchedTopic.text;
-
-						if (screen.width < 780) {
-							mobileMenu.classList.toggle("hidden");
-						}
-
-						if (currentIndex > 0) {
-							renderPreviousContent(
-								data.topics[currentIndex - 1]
-							);
-							showBackCard();
-						} else {
-							hideBackCard();
-						}
-
-						if (currentIndex < data.topics.length - 1) {
-							renderNextContent(data.topics[currentIndex + 1]);
-							showNextCard();
-						} else {
-							hideNextCard();
-						}
-					} else {
-						console.log("Error, topic not found!");
-					}
-				});
+				topic.addEventListener("click", handleTopicMenuClick);
 			});
 
+			//CARD RENDER
 			const back = document.getElementById("backCard");
 			const next = document.getElementById("nextCard");
 
@@ -98,7 +51,7 @@ function renderNextContent(nextTopic) {
     `;
 }
 
-// CSS CHANGES
+//CSS CHANGES
 function hideBackCard() {
 	const backCard = document.getElementById("backCard");
 	backCard.style.display = "none";
@@ -125,6 +78,58 @@ function truncateText(text) {
 		return words.slice(0, 6).join(" ") + " ...";
 	} else {
 		return text;
+	}
+}
+
+//TOPIC CLICK AND HTML TEXT RENDER
+async function handleTopicMenuClick(event) {
+	const response = await fetch("topics.json");
+	const data = await response.json();
+
+	const clickedItem = event.target;
+	const clickedLink = clickedItem.closest("a");
+	const matchedTopic = data.topics.find(
+		(topic) => topic.topic_name === clickedItem.innerText
+	);
+
+	if (clickedLink) {
+		const previouslyClickedItem = document.querySelector(".selected");
+
+		if (previouslyClickedItem) {
+			previouslyClickedItem.classList.remove("selected");
+		}
+
+		clickedItem.classList.add("selected");
+	}
+
+	if (matchedTopic) {
+		const currentIndex = data.topics.indexOf(matchedTopic);
+
+		const topicElement = document.getElementById("topic-text");
+		const topicTitle = document.getElementById("topic-title");
+
+		topicTitle.textContent = matchedTopic.topic_name;
+		topicElement.innerHTML = matchedTopic.text;
+
+		if (screen.width < 780) {
+			mobileMenu.classList.toggle("hidden");
+		}
+
+		if (currentIndex > 0) {
+			renderPreviousContent(data.topics[currentIndex - 1]);
+			showBackCard();
+		} else {
+			hideBackCard();
+		}
+
+		if (currentIndex < data.topics.length - 1) {
+			renderNextContent(data.topics[currentIndex + 1]);
+			showNextCard();
+		} else {
+			hideNextCard();
+		}
+	} else {
+		console.log("Error, topic not found!");
 	}
 }
 

@@ -1,11 +1,15 @@
 const sideMenuItems = document.querySelectorAll("#topic-id");
 const hamburger = document.querySelector(".hambuger-menu");
 const mobileMenu = document.querySelector(".mobileMenu");
+const referenceHTML = document.querySelector(".references");
+const logoLink = document.querySelector(".logo");
 
 try {
 	fetch("topics.json")
 		.then((response) => response.json())
 		.then((data) => {
+			referenceHTML.addEventListener("click", handleReferenceClick);
+
 			sideMenuItems.forEach((topic) => {
 				topic.addEventListener("click", handleTopicMenuClick);
 			});
@@ -16,10 +20,109 @@ try {
 
 			back.addEventListener("click", handleClick);
 			next.addEventListener("click", handleClick);
+			lsHandler(data);
 		})
 		.catch((error) => console.error("Error fetching JSON:", error));
 } catch (err) {
 	console.error(err);
+}
+
+logoLink.addEventListener("click", handleLogoClick);
+
+function handleLogoClick(event) {
+	localStorage.clear();
+	event.preventDefault();
+	window.location.reload();
+}
+
+async function handleReferenceClick(event) {
+	const topicElement = document.getElementById("topic-text");
+	const topicTitle = document.getElementById("topic-title");
+
+	topicTitle.innerHTML = "Referências";
+	topicElement.innerHTML = `
+    IMC GRUPO. COVID-19 News: FBI Reports 300% Increase in Reported Cybercrimes. Disponível em: <a href='https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/'>https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/</a>.<br><br>
+
+    BRASIL. Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD). Disponível em: <a href='https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm'>https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm</a>.<br><br>
+
+    BOSCH. Cyber Security. Disponível em: <a href='https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/'>https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/</a>.<br><br>
+
+    CSO. Top Cybersecurity Statistics, Trends, and Facts. Disponível em: <a href='https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html'>https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html</a>.<br><br>
+
+    WIKIPÉDIA. Cavalo de Troia (computação). Disponível em: <a href='https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)'>https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)</a>.<br><br>
+
+    WIKIPÉDIA. Spyware. Disponível em: <a href='https://pt.wikipedia.org/wiki/Spyware'>https://pt.wikipedia.org/wiki/Spyware</a>.<br><br>
+
+    IT SECURITY WIRE. DDoS Attacks Rise Almost 5 Million in the First Half of 2020. Disponível em: <a href='https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/'>https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/</a>.<br><br>
+
+    SAP BRASIL. What is Cybersecurity? Disponível em: <a href='https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html'>https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html</a>.<br><br>`;
+}
+
+//LOCAL STORAGE HANDLER
+async function lsHandler(data) {
+	const selectedTopic = localStorage.getItem("clicked_item");
+
+	if (selectedTopic) {
+		renderTopic(selectedTopic, data);
+	}
+}
+
+//TOPIC CLICK HANDLER
+async function handleTopicMenuClick(event) {
+	const response = await fetch("topics.json");
+	const data = await response.json();
+
+	const clickedItem = event.target;
+	const clickedLink = clickedItem.closest("a");
+
+	if (clickedLink) {
+		localStorage.setItem("clicked_item", clickedLink.textContent);
+		const previouslyClickedItem = document.querySelector(".selected");
+
+		if (previouslyClickedItem) {
+			previouslyClickedItem.classList.remove("selected");
+		}
+
+		clickedItem.classList.add("selected");
+
+		renderTopic(clickedLink.textContent, data);
+	}
+}
+
+//RENDER HTML FROM JSON
+function renderTopic(clickedItemText, data) {
+	const matchedTopic = data.topics.find(
+		(topic) => topic.topic_name === clickedItemText
+	);
+	if (matchedTopic) {
+		const currentIndex = data.topics.indexOf(matchedTopic);
+
+		const topicElement = document.getElementById("topic-text");
+		const topicTitle = document.getElementById("topic-title");
+
+		topicTitle.textContent = matchedTopic.topic_name;
+		topicElement.innerHTML = matchedTopic.text;
+
+		if (screen.width < 780) {
+			mobileMenu.classList.toggle("hidden");
+		}
+
+		if (currentIndex > 0) {
+			renderPreviousContent(data.topics[currentIndex - 1]);
+			showBackCard();
+		} else {
+			hideBackCard();
+		}
+
+		if (currentIndex < data.topics.length - 1) {
+			renderNextContent(data.topics[currentIndex + 1]);
+			showNextCard();
+		} else {
+			hideNextCard();
+		}
+	} else {
+		console.log("Error, topic not found!");
+	}
 }
 
 //CARD RENDERING
@@ -81,62 +184,38 @@ function truncateText(text) {
 	}
 }
 
-//TOPIC CLICK AND HTML TEXT RENDER
-async function handleTopicMenuClick(event) {
+//CARD CLICK HANDLING
+async function handleClick(event) {
 	const response = await fetch("topics.json");
 	const data = await response.json();
 
 	const clickedItem = event.target;
-	const clickedLink = clickedItem.closest("a");
-	const matchedTopic = data.topics.find(
-		(topic) => topic.topic_name === clickedItem.innerText
-	);
+	const cardClasses = [".nextCard", ".backCard"];
 
-	if (clickedLink) {
-		const previouslyClickedItem = document.querySelector(".selected");
+	for (const cardClass of cardClasses) {
+		const cardDiv = clickedItem.closest(cardClass);
 
-		if (previouslyClickedItem) {
-			previouslyClickedItem.classList.remove("selected");
+		if (cardDiv) {
+			const h4Element = cardDiv.querySelector("h4");
+
+			if (h4Element) {
+				const sidebarItems =
+					document.querySelectorAll(".sideBar-item a");
+
+				sidebarItems.forEach((sidebarItem) => {
+					if (sidebarItem.classList.contains("selected")) {
+						sidebarItem.classList.remove("selected");
+					}
+					if (
+						sidebarItem.textContent.trim() ===
+						h4Element.textContent.trim()
+					) {
+						sidebarItem.classList.add("selected");
+					}
+				});
+			}
 		}
-
-		clickedItem.classList.add("selected");
 	}
-
-	if (matchedTopic) {
-		const currentIndex = data.topics.indexOf(matchedTopic);
-
-		const topicElement = document.getElementById("topic-text");
-		const topicTitle = document.getElementById("topic-title");
-
-		topicTitle.textContent = matchedTopic.topic_name;
-		topicElement.innerHTML = matchedTopic.text;
-
-		if (screen.width < 780) {
-			mobileMenu.classList.toggle("hidden");
-		}
-
-		if (currentIndex > 0) {
-			renderPreviousContent(data.topics[currentIndex - 1]);
-			showBackCard();
-		} else {
-			hideBackCard();
-		}
-
-		if (currentIndex < data.topics.length - 1) {
-			renderNextContent(data.topics[currentIndex + 1]);
-			showNextCard();
-		} else {
-			hideNextCard();
-		}
-	} else {
-		console.log("Error, topic not found!");
-	}
-}
-
-//CARD CLICK HANDLING
-async function handleClick() {
-	const response = await fetch("topics.json");
-	const data = await response.json();
 
 	const h4Element = this.querySelector("h4").textContent;
 

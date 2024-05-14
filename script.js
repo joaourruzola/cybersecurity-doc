@@ -7,7 +7,7 @@ const darkTheme = document.querySelector(".dark-mode");
 const citationLinks = document.querySelector(".citation-links");
 
 try {
-	fetch("topics.json")
+	fetch("./model/topics.json")
 		.then((response) => response.json())
 		.then((data) => {
 			referenceHTML.addEventListener("click", handleReferenceClick);
@@ -89,7 +89,7 @@ function themeHandler() {
 
 //TOPIC CLICK HANDLER
 async function handleTopicMenuClick(event) {
-	const response = await fetch("topics.json");
+	const response = await fetch("./model/topics.json");
 	const data = await response.json();
 
 	const clickedItem = event.target;
@@ -109,11 +109,27 @@ async function handleTopicMenuClick(event) {
 	}
 }
 
+function highlightTopicMenu(clickedItemText) {
+	const sidebarItems = document.querySelectorAll(".sideBar-item a");
+
+	sidebarItems.forEach((sidebarItem) => {
+		if (sidebarItem.classList.contains("selected")) {
+			sidebarItem.classList.remove("selected");
+		}
+		if (sidebarItem.textContent.trim() === clickedItemText) {
+			sidebarItem.classList.add("selected");
+		}
+	});
+}
+
 //RENDER HTML FROM JSON
 function renderTopic(clickedItemText, data) {
 	const matchedTopic = data.topics.find(
 		(topic) => topic.topic_name === clickedItemText
 	);
+
+	highlightTopicMenu(clickedItemText);
+
 	if (matchedTopic) {
 		const currentIndex = data.topics.indexOf(matchedTopic);
 
@@ -210,34 +226,16 @@ function truncateText(text) {
 
 //CARD CLICK HANDLING
 async function handleClick(event) {
-	const response = await fetch("topics.json");
+	const response = await fetch("./model/topics.json");
 	const data = await response.json();
 
 	const clickedItem = event.target;
-	const cardClasses = [".nextCard", ".backCard"];
+	const cardDiv = clickedItem.closest(".nextCard, .backCard");
 
-	for (const cardClass of cardClasses) {
-		const cardDiv = clickedItem.closest(cardClass);
-
-		if (cardDiv) {
-			const h4Element = cardDiv.querySelector("h4");
-
-			if (h4Element) {
-				const sidebarItems =
-					document.querySelectorAll(".sideBar-item a");
-
-				sidebarItems.forEach((sidebarItem) => {
-					if (sidebarItem.classList.contains("selected")) {
-						sidebarItem.classList.remove("selected");
-					}
-					if (
-						sidebarItem.textContent.trim() ===
-						h4Element.textContent.trim()
-					) {
-						sidebarItem.classList.add("selected");
-					}
-				});
-			}
+	if (cardDiv) {
+		const h4Element = cardDiv.querySelector("h4");
+		if (h4Element) {
+			highlightTopicMenu(h4Element.textContent);
 		}
 	}
 
@@ -274,5 +272,4 @@ async function handleClick(event) {
 //MOBILE MENU TOGGLE
 hamburger.addEventListener("click", function () {
 	mobileMenu.classList.toggle("hidden");
-	// hamburger.classList.toggle("clicked");
 });

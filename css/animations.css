@@ -27,7 +27,12 @@
 
 /* HOVER EFFECTS */
 a:hover {
-	color: var(--hoverLink);
+	color: var(--sky-500);
+	text-decoration: underline;
+}
+
+.dark-theme .sideBar a:hover {
+	color: var(--sky-300);
 }
 
 .nav-title:hover {
@@ -35,10 +40,16 @@ a:hover {
 }
 
 .citation-links:hover {
-	color: var(--textLinksColor);
+	color: var(--sky-300);
 }
 
 .backCard:hover,
 .nextCard:hover {
-	background-color: #08aeea1c;
+	background-color: var(--logoColor);
+}
+
+.dark-theme .backCard:hover,
+.dark-theme .nextCard:hover {
+	color: var(--sky-300);
+	background-color: var(--slate-950);
 }

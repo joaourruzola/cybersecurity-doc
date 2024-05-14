@@ -13,5 +13,6 @@ tecnologia ou desejam melhorar suas habilidades tecnológicas no contexto de seg
 - Acessibilidade (tema escuro)
 
 ## Notas
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0becdd4c-ff9c-4a1c-abf7-6a9f6ffc5a27/deploy-status)](https://app.netlify.com/sites/ciberguard/deploys)
 
-Esse projeto está no GitHub para fins de documentação.
+Esse projeto está no GitHub para fins de documentação. **Work In Progress**

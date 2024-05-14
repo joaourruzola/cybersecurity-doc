@@ -27,7 +27,7 @@
 
 /* HOVER EFFECTS */
 a:hover {
-	color: #2af59ad0;
+	color: var(--hoverLink);
 }
 
 .nav-title:hover {

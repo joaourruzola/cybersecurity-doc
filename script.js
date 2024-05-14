@@ -3,6 +3,8 @@ const hamburger = document.querySelector(".hambuger-menu");
 const mobileMenu = document.querySelector(".mobileMenu");
 const referenceHTML = document.querySelector(".references");
 const logoLink = document.querySelector(".logo");
+const darkTheme = document.querySelector(".dark-mode");
+const citationLinks = document.querySelector(".citation-links");
 
 try {
 	fetch("topics.json")
@@ -20,7 +22,10 @@ try {
 
 			back.addEventListener("click", handleClick);
 			next.addEventListener("click", handleClick);
+
+			//LOCAL STORAGE
 			lsHandler(data);
+			themeHandler();
 		})
 		.catch((error) => console.error("Error fetching JSON:", error));
 } catch (err) {
@@ -30,7 +35,7 @@ try {
 logoLink.addEventListener("click", handleLogoClick);
 
 function handleLogoClick(event) {
-	localStorage.clear();
+	localStorage.clear("clicked_item");
 	event.preventDefault();
 	window.location.reload();
 }
@@ -64,6 +69,21 @@ async function lsHandler(data) {
 
 	if (selectedTopic) {
 		renderTopic(selectedTopic, data);
+	}
+}
+
+function themeHandler() {
+	darkTheme.addEventListener("click", function () {
+		const toggleTheme = document.body.classList.toggle("dark-theme");
+		localStorage.setItem("dark_theme", toggleTheme);
+	});
+
+	const isDarkTheme = JSON.parse(localStorage.getItem("dark_theme"));
+
+	if (isDarkTheme) {
+		document.body.classList.add("dark-theme");
+	} else {
+		document.body.classList.remove("dark-theme");
 	}
 }
 
@@ -103,9 +123,10 @@ function renderTopic(clickedItemText, data) {
 		topicTitle.textContent = matchedTopic.topic_name;
 		topicElement.innerHTML = matchedTopic.text;
 
-		if (screen.width < 780) {
-			mobileMenu.classList.toggle("hidden");
-		}
+		mobileMenu.classList.add("hidden");
+		// if (screen.width < 780 && clickedItemText) {
+		// 	mobileMenu.classList.toggle("hidden");
+		// }
 
 		if (currentIndex > 0) {
 			renderPreviousContent(data.topics[currentIndex - 1]);
@@ -154,7 +175,7 @@ function renderNextContent(nextTopic) {
     `;
 }
 
-//CSS CHANGES
+//CARD CSS TOGGLE
 function hideBackCard() {
 	const backCard = document.getElementById("backCard");
 	backCard.style.display = "none";
@@ -177,6 +198,9 @@ function showBackCard() {
 //CARD LAYOUT
 function truncateText(text) {
 	const words = text.split(" ");
+	if (screen.width < 780) {
+		return words.slice(0, 1).join(" ") + " ...";
+	}
 	if (words.length > 5) {
 		return words.slice(0, 6).join(" ") + " ...";
 	} else {
@@ -250,4 +274,5 @@ async function handleClick(event) {
 //MOBILE MENU TOGGLE
 hamburger.addEventListener("click", function () {
 	mobileMenu.classList.toggle("hidden");
+	// hamburger.classList.toggle("clicked");
 });

@@ -2,7 +2,8 @@
 <html lang="pt-br">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="./css/style.css" />
 		<link rel="stylesheet" href="./css/animations.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -66,21 +67,20 @@
 		<!-- NAV MENU -->
 		<nav class="topBar">
 			<div class="topTitle">
-				<h2 class="nav-title-back">Segurança na WEB</h2>
-				<a class="logo" href="/"
-					><h2 class="nav-title">Segurança na WEB</h2></a
-				>
+				<img class="logo" src="./resources/logo.png" />
+				<h2 class="nav-title">Segurança na WEB</h2>
 			</div>
 			<div class="topSearch">
 				<input
 					type="search"
 					placeholder="Pesquisar documentação"
 				/><ion-icon
-					style="position: relative; left: -320px"
+					style="position: relative; left: -430px; font-size: 1.25em"
 					name="search-outline"
 				></ion-icon>
 			</div>
 			<div class="topLinks">
+				<ion-icon class="dark-mode" name="sunny-outline"></ion-icon>
 				<a href="https://joaobraun.netlify.app/" target="_blank"
 					>Autor</a
 				>
@@ -91,7 +91,9 @@
 		<div class="container">
 			<!-- SIDE MENU -->
 			<nav class="sideBar">
-				<p style="cursor: default">Segurança da Informação</p>
+				<p style="cursor: default">
+					<strong>Segurança da Informação</strong>
+				</p>
 				<ul>
 					<li id="topic-id" class="sideBar-item">
 						<a href="#">Segurança</a>
@@ -103,7 +105,7 @@
 						<a href="#">Dados</a>
 					</li>
 				</ul>
-				<p style="cursor: default">Ataques Comuns</p>
+				<p style="cursor: default"><strong>Ataques Comuns</strong></p>
 				<ul>
 					<li id="topic-id" class="sideBar-item">
 						<a id="phishing" href="#phishing">Phishing</a>
@@ -121,7 +123,9 @@
 						<a href="#">DDoS</a>
 					</li>
 				</ul>
-				<p style="cursor: default">Medidas de Prevenção</p>
+				<p style="cursor: default">
+					<strong>Medidas de Prevenção</strong>
+				</p>
 				<ul>
 					<li id="topic-id" class="sideBar-item">
 						<a href="#">Gerenciadores de Senha</a>

@@ -10,12 +10,14 @@
 	--textColor: #050505;
 	--darkText: #fff;
 	--lightBg: #fdfbfb;
+	--darkBg: #141414;
 	--hoverLink: #2a7bf5d0;
 	--sideBarTitle: #0066ff;
 	--textLinksColor: #084db4;
 	--linksColor: #2b2a2a;
 	--navBorder: #47556940;
 	--cardHover: #08aeea1c;
+	--slate-300: #e2e8f0;
 	--slate-300: #cbd5e1;
 	--slate-500: #64748b;
 	--slate-800: #1e293b;
@@ -137,8 +139,8 @@ body {
 
 /* DARK THEME */
 .dark-theme {
-	background-color: var(--textColor);
-	color: var(--darkText);
+	background-color: var(--darkBg);
+	color: var(--slate-300);
 }
 
 .dark-theme a {

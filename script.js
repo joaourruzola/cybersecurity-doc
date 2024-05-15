@@ -61,6 +61,9 @@ async function handleReferenceClick(event) {
     IT SECURITY WIRE. DDoS Attacks Rise Almost 5 Million in the First Half of 2020. Disponível em: <a href='https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/'>https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/</a>.<br><br>
 
     SAP BRASIL. What is Cybersecurity? Disponível em: <a href='https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html'>https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html</a>.<br><br>`;
+
+	hideBackCard();
+	hideNextCard();
 }
 
 //LOCAL STORAGE HANDLER

@@ -1,0 +1,40 @@
+{
+  "topics": [
+    {
+      "topic_id": 1,
+      "text": "IMC GRUPO. COVID-19 News: FBI Reports 300% Increase in Reported Cybercrimes. Disponível em: <a href='https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/'>https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/</a>.<br><br>"
+    },
+    {
+      "topic_id": 2,
+      "text": "BRASIL. Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD). Disponível em: <a href='https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm'>https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm</a>.<br><br>"
+    },
+    {
+      "topic_id": 3,
+      "text": "BOSCH. Cyber Security. Disponível em: <a href='https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/'>https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/</a>.<br><br>"
+    },
+    {
+      "topic_id": 4,
+      "text": "CSO. Top Cybersecurity Statistics, Trends, and Facts. Disponível em: <a href='https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html'>https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html</a>.<br><br>"
+    },
+    {
+      "topic_id": 5,
+      "text": "WIKIPÉDIA. Cavalo de Troia (computação). Disponível em: <a href='https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)'>https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)</a>.<br><br>"
+    },
+    {
+      "topic_id": 6,
+      "text": "WIKIPÉDIA. Spyware. Disponível em: <a href='https://pt.wikipedia.org/wiki/Spyware'>https://pt.wikipedia.org/wiki/Spyware</a>.<br><br>"
+    },
+    {
+      "topic_id": 7,
+      "text": "IT SECURITY WIRE. DDoS Attacks Rise Almost 5 Million in the First Half of 2020. Disponível em: <a href='https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/'>https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/</a>.<br><br>"
+    },
+    {
+      "topic_id": 8,
+      "text": "SAP BRASIL. What is Cybersecurity? Disponível em: <a href='https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html'>https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html</a>.<br><br>"
+    },
+    {
+      "topic_id": 9,
+      "text": "IBM BRASIL. Cybersecurity. Disponível em: <a href='https://www.ibm.com/br-pt/topics/cybersecurity'>https://www.ibm.com/br-pt/topics/cybersecurity</a>"
+    }
+  ]
+}

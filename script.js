@@ -22,7 +22,6 @@ try {
 
 			back.addEventListener("click", handleClick);
 			next.addEventListener("click", handleClick);
-
 			//LOCAL STORAGE
 			lsHandler(data);
 			themeHandler();

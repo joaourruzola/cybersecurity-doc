@@ -9,8 +9,10 @@ A documentation-style website that explains cybersecurity concepts for everyday 
 ## Features
 
 - Documentation-style layout for reading topics
-- Mobile-first design
-- Accessibility: dark theme by default
+- Responsive, mobile-first layout (off-canvas menu on phones, fixed sidebar on desktop)
+- Hash routes (`#/phishing`, `#/referencias`) so links, reload and the browser back button work
+- Light/dark theme (follows the system setting on first visit, then remembers the choice)
+- Menu and cards are generated from `model/topics.json`; no icon CDN needed
 - Topics and references stored as JSON data
 
 ## Tech Stack
@@ -25,7 +27,7 @@ No build step is needed. Start a local server with live reload:
 
 ```bash
 npm install
-npm run live
+npm run live   # or any static server; opening index.html via file:// won't load the JSON
 ```
 
 ## Project Structure

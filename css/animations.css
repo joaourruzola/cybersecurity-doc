@@ -1,5 +1,3 @@
-@import "style.css";
-
 /* ANIMATIONS */
 @keyframes rainbow-text-simple-animation-rev {
 	0% {
@@ -27,29 +25,26 @@
 
 /* HOVER EFFECTS */
 a:hover {
-	color: var(--sky-500);
-	text-decoration: underline;
-}
-
-.dark-theme .sideBar a:hover {
-	color: var(--sky-300);
+	color: var(--accent);
 }
 
 .nav-title:hover {
 	animation: rainbow-text-simple-animation 0.5s ease-in forwards;
 }
 
-.citation-links:hover {
-	color: var(--sky-300);
-}
-
 .backCard:hover,
 .nextCard:hover {
-	background-color: var(--logoColor);
+	background-color: var(--card-hover-bg);
+	color: var(--card-hover-text);
 }
 
-.dark-theme .backCard:hover,
-.dark-theme .nextCard:hover {
-	color: var(--sky-300);
-	background-color: var(--slate-950);
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+		scroll-behavior: auto !important;
+	}
 }

@@ -1,10 +1,12 @@
 {
 	"name": "projeto_extensao",
 	"version": "1.0.0",
-	"description": "security ",
-	"main": "index.js",
+	"description": "CiberGuard - documentação de segurança da informação",
 	"scripts": {
 		"live": "live-server"
+	},
+	"devDependencies": {
+		"live-server": "^1.2.2"
 	},
 	"author": "",
 	"license": "ISC"

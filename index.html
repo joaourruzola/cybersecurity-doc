@@ -2,147 +2,104 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/animations.css" />
+    <meta
+      name="description"
+      content="CiberGuard: documentação de segurança da informação para o dia a dia — ataques comuns e medidas de prevenção."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>CiberGuard | Segurança da Informação</title>
+    <link rel="icon" type="image/png" href="./resources/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;," />
-    <title>Segurança da Informação</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/animations.css" />
+    <script>
+      // Aplica o tema antes da pintura para evitar "flash" claro no modo escuro.
+      try {
+        var saved = localStorage.getItem("dark_theme");
+        var dark =
+          saved !== null
+            ? saved === "true"
+            : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (dark) document.documentElement.classList.add("dark-theme");
+      } catch (e) {}
+    </script>
   </head>
   <body>
-    <nav class="mobileNavBar hidden">
-      <ion-icon class="hambuger-menu" name="menu-outline"></ion-icon>
-      <a href="/"><h2 class="nav-title">Segurança na WEB</h2></a>
-    </nav>
-    <nav class="mobileMenu hidden">
-      <p style="cursor: default">Segurança da Informação</p>
-      <ul>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Segurança</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Por quê?</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Dados</a>
-        </li>
-      </ul>
-      <p style="cursor: default">Ataques Comuns</p>
-      <ul>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Phishing</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Email</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Ransomware</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Malware</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">DDoS</a>
-        </li>
-      </ul>
-      <p style="cursor: default">Medidas de Prevenção</p>
-      <ul>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Gerenciadores de Senha</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">2FA</a>
-        </li>
-        <li id="topic-id" class="sideBar-item">
-          <a href="#">Backups</a>
-        </li>
-      </ul>
-    </nav>
-    <!-- NAV MENU -->
-    <nav class="topBar">
-      <div class="topTitle">
-        <img class="logo" src="./resources/logo.png" />
-        <h2 class="nav-title">CiberGuard</h2>
-      </div>
-      <!-- <div class="topSearch">
-				<input
-					type="search"
-					placeholder="Pesquisar documentação"
-				/><ion-icon
-					style="position: relative; left: -430px; font-size: 1.25em"
-					name="search-outline"
-				></ion-icon>
-			</div> -->
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+    <!-- TOP BAR (desktop e mobile) -->
+    <header class="topBar">
+      <button
+        id="menu-toggle"
+        class="icon-btn menu-toggle"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path
+            d="M4 6h16M4 12h16M4 18h16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <a class="topTitle" href="#/" id="home-link" aria-label="CiberGuard — página inicial">
+        <img class="logo" src="./resources/logo.png" alt="" width="249" height="321" />
+        <span class="nav-title">CiberGuard</span>
+      </a>
+
       <div class="topLinks">
-        <ion-icon class="dark-mode" name="sunny-outline"></ion-icon>
-        <a href="https://joaourruzola.netlify.app/" target="_blank">Autor</a>
-        <a class="references">Referências</a>
-        <img src="" alt="" />
+        <a href="https://joaourruzola.netlify.app/" target="_blank" rel="noopener">Autor</a>
+        <a href="#/referencias" id="ref-link" class="references">Referências</a>
+        <button
+          id="theme-toggle"
+          class="icon-btn"
+          type="button"
+          aria-label="Alternar tema claro/escuro"
+        >
+          <svg class="icon-sun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+            <path
+              d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path
+              d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
       </div>
-    </nav>
+    </header>
+
+    <div class="backdrop" id="backdrop" hidden></div>
+
     <div class="container">
-      <!-- SIDE MENU -->
-      <nav class="sideBar">
-        <p style="cursor: default" class="sideTitle">
-          <strong>Segurança da Informação</strong>
-        </p>
-        <ul>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Segurança</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Por quê?</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Dados</a>
-          </li>
-        </ul>
-        <p style="cursor: default" class="sideTitle">
-          <strong>Ataques Comuns</strong>
-        </p>
-        <ul>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Phishing</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Email</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Ransomware</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Malware</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">DDoS</a>
-          </li>
-        </ul>
-        <p style="cursor: default" class="sideTitle">
-          <strong>Medidas de Prevenção</strong>
-        </p>
-        <ul>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Gerenciadores de Senha</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">2FA</a>
-          </li>
-          <li id="topic-id" class="sideBar-item">
-            <a href="#">Backups</a>
-          </li>
-        </ul>
-      </nav>
-      <!-- TEXT SECTION -->
-      <section class="mainContent">
-        <div class="blurryTop"></div>
+      <!-- MENU: sidebar no desktop, gaveta no mobile (montado a partir do JSON) -->
+      <nav class="sideBar" id="sidebar" aria-label="Tópicos"></nav>
+
+      <!-- CONTEÚDO -->
+      <main class="mainContent" id="main" tabindex="-1">
         <h1 id="topic-title">Introdução</h1>
-        <article id="topic-text" style="line-height: 1.55em">
+        <article id="topic-text">
           Bem-vindo à nossa página dedicada à segurança na web e proteção de
           dados. Neste espaço, exploramos os desafios e soluções vitais para
           manter sua presença online segura e seus dados protegidos.
@@ -158,22 +115,12 @@
           Abordaremos tanto o aspecto pessoal e empresarial de navegação segura.
           Vamos juntos construir uma presença digital mais segura e resiliente.
         </article>
-        <br />
-        <!-- CARDS -->
-        <div class="cardContainer">
-          <a id="backCard"> </a>
-          <a id="nextCard"> </a>
-        </div>
-      </section>
+
+        <!-- CARDS ANTERIOR / PRÓXIMO -->
+        <div class="cardContainer" id="cards"></div>
+      </main>
     </div>
-    <script src="script.js"></script>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-    ></script>
+
+    <script src="./script.js"></script>
   </body>
 </html>

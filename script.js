@@ -1,280 +1,307 @@
-const sideMenuItems = document.querySelectorAll("#topic-id");
-const hamburger = document.querySelector(".hambuger-menu");
-const mobileMenu = document.querySelector(".mobileMenu");
-const referenceHTML = document.querySelector(".references");
-const logoLink = document.querySelector(".logo");
-const darkTheme = document.querySelector(".dark-mode");
-const citationLinks = document.querySelector(".citation-links");
+"use strict";
 
-try {
-	fetch("./model/topics.json")
-		.then((response) => response.json())
-		.then((data) => {
-			referenceHTML.addEventListener("click", handleReferenceClick);
+/* ==========================================================================
+   CiberGuard — comportamento da página
+   Rotas por hash:  #/ (início) · #/referencias · #/<slug-do-topico>
+   ========================================================================== */
 
-			sideMenuItems.forEach((topic) => {
-				topic.addEventListener("click", handleTopicMenuClick);
-			});
+const els = {
+	menuToggle: document.getElementById("menu-toggle"),
+	sidebar: document.getElementById("sidebar"),
+	backdrop: document.getElementById("backdrop"),
+	themeToggle: document.getElementById("theme-toggle"),
+	title: document.getElementById("topic-title"),
+	text: document.getElementById("topic-text"),
+	cards: document.getElementById("cards"),
+	main: document.getElementById("main"),
+};
 
-			//CARD RENDER
-			const back = document.getElementById("backCard");
-			const next = document.getElementById("nextCard");
+const HOME = { title: els.title.textContent, html: els.text.innerHTML };
+const LAST_KEY = "clicked_item"; // mesma chave de antes (agora guarda o slug)
+const desktopQuery = window.matchMedia("(min-width: 901px)");
 
-			back.addEventListener("click", handleClick);
-			next.addEventListener("click", handleClick);
-			//LOCAL STORAGE
-			lsHandler(data);
-			themeHandler();
-		})
-		.catch((error) => console.error("Error fetching JSON:", error));
-} catch (err) {
-	console.error(err);
-}
+let topics = [];
+let references = [];
 
-logoLink.addEventListener("click", handleLogoClick);
-
-function handleLogoClick(event) {
-	localStorage.clear("clicked_item");
-	event.preventDefault();
-	window.location.reload();
-}
-
-async function handleReferenceClick(event) {
-	const topicElement = document.getElementById("topic-text");
-	const topicTitle = document.getElementById("topic-title");
-
-	topicTitle.innerHTML = "Referências";
-	topicElement.innerHTML = `
-    IMC GRUPO. COVID-19 News: FBI Reports 300% Increase in Reported Cybercrimes. Disponível em: <a href='https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/'>https://www.imcgrupo.com/covid-19-news-fbi-reports-300-increase-in-reported-cybercrimes/</a>.<br><br>
-
-    BRASIL. Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD). Disponível em: <a href='https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm'>https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm</a>.<br><br>
-
-    BOSCH. Cyber Security. Disponível em: <a href='https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/'>https://www.bosch.com.br/noticias-e-historias/aiot/cyber-security/</a>.<br><br>
-
-    CSO. Top Cybersecurity Statistics, Trends, and Facts. Disponível em: <a href='https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html'>https://www.csoonline.com/article/571367/top-cybersecurity-statistics-trends-and-facts.html</a>.<br><br>
-
-    WIKIPÉDIA. Cavalo de Troia (computação). Disponível em: <a href='https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)'>https://pt.wikipedia.org/wiki/Cavalo_de_troia_(computa%C3%A7%C3%A3o)</a>.<br><br>
-
-    WIKIPÉDIA. Spyware. Disponível em: <a href='https://pt.wikipedia.org/wiki/Spyware'>https://pt.wikipedia.org/wiki/Spyware</a>.<br><br>
-
-    IT SECURITY WIRE. DDoS Attacks Rise Almost 5 Million in the First Half of 2020. Disponível em: <a href='https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/'>https://itsecuritywire.com/featured/ddos-attacks-rise-almost-5-million-in-the-first-half-of-2020/</a>.<br><br>
-
-    SAP BRASIL. What is Cybersecurity? Disponível em: <a href='https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html'>https://www.sap.com/brazil/products/financial-management/what-is-cybersecurity.html</a>.<br><br>
-    
-    IBM BRASIL. Cybersecurity. Disponível em: <a href='https://www.ibm.com/br-pt/topics/cybersecurity'>https://www.ibm.com/br-pt/topics/cybersecurity</a>
-    `;
-
-	hideBackCard();
-	hideNextCard();
-}
-
-//LOCAL STORAGE HANDLER
-async function lsHandler(data) {
-	const selectedTopic = localStorage.getItem("clicked_item");
-
-	if (selectedTopic) {
-		renderTopic(selectedTopic, data);
-	}
-}
-
-function themeHandler() {
-	darkTheme.addEventListener("click", function () {
-		const toggleTheme = document.body.classList.toggle("dark-theme");
-		localStorage.setItem("dark_theme", toggleTheme);
-	});
-
-	const isDarkTheme = JSON.parse(localStorage.getItem("dark_theme"));
-
-	if (isDarkTheme) {
-		document.body.classList.add("dark-theme");
-	} else {
-		document.body.classList.remove("dark-theme");
-	}
-}
-
-//TOPIC CLICK HANDLER
-async function handleTopicMenuClick(event) {
-	const response = await fetch("./model/topics.json");
-	const data = await response.json();
-
-	const clickedItem = event.target;
-	const clickedLink = clickedItem.closest("a");
-
-	if (clickedLink) {
-		localStorage.setItem("clicked_item", clickedLink.textContent);
-		const previouslyClickedItem = document.querySelector(".selected");
-
-		if (previouslyClickedItem) {
-			previouslyClickedItem.classList.remove("selected");
+/* ---------- localStorage seguro (pode lançar erro em modo privado) ---------- */
+const store = {
+	get(key) {
+		try {
+			return localStorage.getItem(key);
+		} catch {
+			return null;
 		}
+	},
+	set(key, value) {
+		try {
+			localStorage.setItem(key, value);
+		} catch {}
+	},
+};
 
-		clickedItem.classList.add("selected");
-
-		renderTopic(clickedLink.textContent, data);
-	}
+/* ---------- Dados ---------- */
+async function loadJSON(url) {
+	const response = await fetch(url);
+	if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+	return response.json();
 }
 
-function highlightTopicMenu(clickedItemText) {
-	const sidebarItems = document.querySelectorAll(".sideBar-item a");
+async function loadData() {
+	const [t, r] = await Promise.all([
+		loadJSON("./model/topics.json"),
+		loadJSON("./model/references.json"),
+	]);
+	topics = t.topics;
+	references = r.topics;
+}
 
-	sidebarItems.forEach((sidebarItem) => {
-		if (sidebarItem.classList.contains("selected")) {
-			sidebarItem.classList.remove("selected");
-		}
-		if (sidebarItem.textContent.trim() === clickedItemText) {
-			sidebarItem.classList.add("selected");
-		}
+/* ---------- Utilidades ---------- */
+function plainText(html) {
+	const doc = new DOMParser().parseFromString(html, "text/html");
+	return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function escapeHTML(str) {
+	const div = document.createElement("div");
+	div.textContent = str;
+	return div.innerHTML;
+}
+
+const ICON_BACK =
+	'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_NEXT =
+	'<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* ---------- Menu lateral (montado a partir do JSON) ---------- */
+function buildSidebar() {
+	const groups = [];
+	for (const topic of topics) {
+		let group = groups.find((g) => g.name === topic.group);
+		if (!group) groups.push((group = { name: topic.group, items: [] }));
+		group.items.push(topic);
+	}
+
+	const sections = groups
+		.map(
+			(g) => `
+		<p class="sideTitle">${escapeHTML(g.name)}</p>
+		<ul>
+			${g.items
+				.map(
+					(t) =>
+						`<li class="sideBar-item"><a href="#/${t.slug}" data-route="${t.slug}">${escapeHTML(t.topic_name)}</a></li>`
+				)
+				.join("")}
+		</ul>`
+		)
+		.join("");
+
+	// Itens que no desktop ficam no topo da página e no mobile ficam na gaveta.
+	const extra = `
+		<p class="sideTitle only-mobile">Mais</p>
+		<ul class="only-mobile">
+			<li class="sideBar-item"><a href="#/referencias" data-route="referencias">Referências</a></li>
+			<li class="sideBar-item"><a href="https://joaourruzola.netlify.app/" target="_blank" rel="noopener">Autor</a></li>
+		</ul>`;
+
+	els.sidebar.innerHTML = sections + extra;
+}
+
+function highlightMenu(route) {
+	document.querySelectorAll("[data-route]").forEach((a) => {
+		const active = a.dataset.route === route;
+		a.classList.toggle("selected", active);
+		if (active) a.setAttribute("aria-current", "page");
+		else a.removeAttribute("aria-current");
 	});
 }
 
-//RENDER HTML FROM JSON
-function renderTopic(clickedItemText, data) {
-	const matchedTopic = data.topics.find(
-		(topic) => topic.topic_name === clickedItemText
-	);
-
-	highlightTopicMenu(clickedItemText);
-
-	if (matchedTopic) {
-		const currentIndex = data.topics.indexOf(matchedTopic);
-
-		const topicElement = document.getElementById("topic-text");
-		const topicTitle = document.getElementById("topic-title");
-
-		topicTitle.textContent = matchedTopic.topic_name;
-		topicElement.innerHTML = matchedTopic.text;
-
-		mobileMenu.classList.add("hidden");
-		// if (screen.width < 780 && clickedItemText) {
-		// 	mobileMenu.classList.toggle("hidden");
-		// }
-
-		if (currentIndex > 0) {
-			renderPreviousContent(data.topics[currentIndex - 1]);
-			showBackCard();
-		} else {
-			hideBackCard();
-		}
-
-		if (currentIndex < data.topics.length - 1) {
-			renderNextContent(data.topics[currentIndex + 1]);
-			showNextCard();
-		} else {
-			hideNextCard();
-		}
-	} else {
-		console.log("Error, topic not found!");
-	}
+/* ---------- Gaveta (mobile) ---------- */
+function setMenu(open) {
+	document.body.classList.toggle("menu-open", open);
+	els.menuToggle.setAttribute("aria-expanded", String(open));
+	els.menuToggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+	els.backdrop.hidden = !open;
 }
 
-//CARD RENDERING
-function renderPreviousContent(previousTopic) {
-	const previousContent = document.getElementById("backCard");
-	previousContent.innerHTML = `
-    <div class="backCard">
-        <span style="vertical-align: middle">
-            <ion-icon style="vertical-align: middle" name="arrow-back-outline"></ion-icon>
-            Voltar
-        </span>
-        <h4>${previousTopic.topic_name}</h4>
-        <p><i>${truncateText(previousTopic.text)}</i></p>
-    </div>
-    `;
-}
-
-function renderNextContent(nextTopic) {
-	const nextContent = document.getElementById("nextCard");
-	nextContent.innerHTML = `
-    <div class="nextCard">
-        <span style="vertical-align: middle">
-            Próximo
-            <ion-icon style="vertical-align: middle" name="arrow-forward-outline"></ion-icon>
-        </span>
-        <h4>${nextTopic.topic_name}</h4>
-        <p><i>${truncateText(nextTopic.text)}</i></p>
-    </div>
-    `;
-}
-
-//CARD CSS TOGGLE
-function hideBackCard() {
-	const backCard = document.getElementById("backCard");
-	backCard.style.display = "none";
-}
-
-function hideNextCard() {
-	const nextCard = document.getElementById("nextCard");
-	nextCard.style.display = "none";
-}
-
-function showNextCard() {
-	const nextCard = document.getElementById("nextCard");
-	nextCard.style.display = "flex";
-}
-function showBackCard() {
-	const nextCard = document.getElementById("backCard");
-	nextCard.style.display = "flex";
-}
-
-//CARD LAYOUT
-function truncateText(text) {
-	const words = text.split(" ");
-	if (screen.width < 780) {
-		return words.slice(0, 1).join(" ") + " ...";
-	}
-	if (words.length > 5) {
-		return words.slice(0, 6).join(" ") + " ...";
-	} else {
-		return text;
-	}
-}
-
-//CARD CLICK HANDLING
-async function handleClick(event) {
-	const response = await fetch("./model/topics.json");
-	const data = await response.json();
-
-	const clickedItem = event.target;
-	const cardDiv = clickedItem.closest(".nextCard, .backCard");
-
-	if (cardDiv) {
-		const h4Element = cardDiv.querySelector("h4");
-		if (h4Element) {
-			highlightTopicMenu(h4Element.textContent);
-		}
-	}
-
-	const h4Element = this.querySelector("h4").textContent;
-
-	const matchedTopic = data.topics.find(
-		(topic) => topic.topic_name === h4Element
-	);
-
-	if (matchedTopic) {
-		const topicElement = document.getElementById("topic-text");
-		const topicTitle = document.getElementById("topic-title");
-		const currentIndex = data.topics.indexOf(matchedTopic);
-
-		topicTitle.textContent = matchedTopic.topic_name;
-		topicElement.innerHTML = matchedTopic.text;
-
-		if (currentIndex > 0) {
-			renderPreviousContent(data.topics[currentIndex - 1]);
-			showBackCard();
-		} else {
-			hideBackCard();
-		}
-
-		if (currentIndex < data.topics.length - 1) {
-			renderNextContent(data.topics[currentIndex + 1]);
-			showNextCard();
-		} else {
-			hideNextCard();
-		}
-	}
-}
-
-//MOBILE MENU TOGGLE
-hamburger.addEventListener("click", function () {
-	mobileMenu.classList.toggle("hidden");
+els.menuToggle.addEventListener("click", () => {
+	setMenu(!document.body.classList.contains("menu-open"));
 });
+els.backdrop.addEventListener("click", () => setMenu(false));
+document.addEventListener("keydown", (e) => {
+	if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
+		setMenu(false);
+		els.menuToggle.focus();
+	}
+});
+desktopQuery.addEventListener("change", (e) => {
+	if (e.matches) setMenu(false);
+});
+
+/* ---------- Tema ---------- */
+function syncThemeButton() {
+	const dark = document.documentElement.classList.contains("dark-theme");
+	els.themeToggle.setAttribute("aria-pressed", String(dark));
+	els.themeToggle.setAttribute("title", dark ? "Tema claro" : "Tema escuro");
+}
+
+els.themeToggle.addEventListener("click", () => {
+	const dark = document.documentElement.classList.toggle("dark-theme");
+	store.set("dark_theme", String(dark));
+	syncThemeButton();
+});
+syncThemeButton();
+
+/* ---------- Cards anterior / próximo ---------- */
+function cardHTML(kind, label, name, excerpt, href) {
+	const head =
+		kind === "back"
+			? `<span class="cardLabel">${ICON_BACK} ${label}</span>`
+			: `<span class="cardLabel">${label} ${ICON_NEXT}</span>`;
+	return `<a class="${kind}Card" href="${href}">
+		${head}
+		<h4>${escapeHTML(name)}</h4>
+		<p>${escapeHTML(excerpt)}</p>
+	</a>`;
+}
+
+function renderCards(index) {
+	// index: posição do tópico atual; -1 = início; null = sem cards
+	if (index === null) {
+		els.cards.innerHTML = "";
+		return;
+	}
+	const prev = index > 0 ? topics[index - 1] : null;
+	const next = index < topics.length - 1 ? topics[index + 1] : null;
+	els.cards.innerHTML =
+		(prev ? cardHTML("back", "Voltar", prev.topic_name, plainText(prev.text), `#/${prev.slug}`) : "") +
+		(next
+			? cardHTML(
+					"next",
+					index === -1 ? "Começar" : "Próximo",
+					next.topic_name,
+					plainText(next.text),
+					`#/${next.slug}`
+				)
+			: "");
+}
+
+/* ---------- Renderização ---------- */
+function decorateLinks() {
+	els.text.querySelectorAll('a[href^="http"]').forEach((a) => {
+		a.target = "_blank";
+		a.rel = "noopener noreferrer";
+	});
+}
+
+function show(title, html, { pageTitle = title } = {}) {
+	els.title.textContent = title;
+	els.text.innerHTML = html;
+	document.title = pageTitle ? `${pageTitle} | CiberGuard` : "CiberGuard | Segurança da Informação";
+	decorateLinks();
+}
+
+function renderHome() {
+	show(HOME.title, HOME.html, { pageTitle: "" });
+	renderCards(-1);
+	highlightMenu("");
+}
+
+function renderReferences() {
+	const items = references
+		.map((r) => `<li>${r.text.replace(/(<br\s*\/?>\s*)+$/i, "")}</li>`)
+		.join("");
+	show("Referências", `<ul class="ref-list">${items}</ul>`);
+	renderCards(null);
+	highlightMenu("referencias");
+}
+
+function renderTopic(index) {
+	const topic = topics[index];
+	show(topic.topic_name, topic.text);
+	renderCards(index);
+	highlightMenu(topic.slug);
+	store.set(LAST_KEY, topic.slug);
+}
+
+function renderNotFound() {
+	show(
+		"Tópico não encontrado",
+		'Não encontramos esse endereço. <a href="#/">Voltar ao início</a>.'
+	);
+	renderCards(null);
+	highlightMenu("");
+}
+
+function renderError() {
+	show(
+		"Não foi possível carregar o conteúdo",
+		'Verifique sua conexão e tente de novo. Se estiver abrindo o arquivo direto do disco, use um servidor local (<code>npm run live</code>). <br><br><button type="button" class="retry">Tentar novamente</button>',
+		{ pageTitle: "" }
+	);
+	renderCards(null);
+	els.text.querySelector(".retry").addEventListener("click", () => start());
+}
+
+/* ---------- Roteador ---------- */
+let firstRender = true;
+
+function route() {
+	const key = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+
+	if (!key) renderHome();
+	else if (key === "referencias") renderReferences();
+	else {
+		const index = topics.findIndex((t) => t.slug === key);
+		if (index === -1) renderNotFound();
+		else renderTopic(index);
+	}
+
+	setMenu(false);
+	window.scrollTo(0, 0);
+	if (!firstRender) {
+		// leva o foco para o título (leitores de tela / teclado) sem rolar a página
+		els.title.setAttribute("tabindex", "-1");
+		els.title.focus({ preventScroll: true });
+	}
+	firstRender = false;
+}
+
+window.addEventListener("hashchange", () => {
+	if (topics.length) route();
+});
+
+// Clicar em um link para a página em que já estamos (ex.: logo) não dispara
+// "hashchange"; então re-renderizamos e voltamos ao topo manualmente.
+document.addEventListener("click", (e) => {
+	const link = e.target.closest('a[href^="#/"]');
+	if (!link || !topics.length) return;
+	if (link.getAttribute("href") === (location.hash || "#/")) {
+		e.preventDefault();
+		route();
+	}
+});
+
+/* ---------- Início ---------- */
+async function start() {
+	try {
+		await loadData();
+	} catch (error) {
+		console.error("Erro ao carregar dados:", error);
+		renderError();
+		return;
+	}
+
+	buildSidebar();
+
+	// Sem hash na URL: retoma o último tópico lido (comportamento anterior).
+	if (!location.hash) {
+		const last = store.get(LAST_KEY);
+		if (last && topics.some((t) => t.slug === last)) {
+			history.replaceState(null, "", `#/${last}`);
+		}
+	}
+	route();
+}
+
+start();

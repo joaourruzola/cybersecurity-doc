@@ -8,7 +8,8 @@ A documentation-style website that explains cybersecurity concepts for everyday 
 
 ## Features
 
-- Documentation-style layout inspired by the author's portfolio: dark gradient + grain + slow "aurora", cyan accent, Inter, line-style navigation, cards with cursor glow
+- Docs layout in the style of modern documentation sites (a "paper" with a sectioned side menu over a dark banner, breadcrumb, callouts, on-page contents, no top bar on desktop); palette, grain and Inter come from the author's portfolio
+- Illustrated home: original SVG artwork, floating shield and a light canvas particle network (paused off-screen and with reduced motion), plus topic search
 - Light/dark theme (dark by default, choice is remembered)
 - Responsive, mobile-first (off-canvas menu on phones, fixed side panel on desktop)
 - One real, static page per topic (`/phishing/`, `/ransomware/`, ...) so search engines can index each one
@@ -40,8 +41,10 @@ Netlify needs no build command: the generated files are committed and published 
 ├── model/
 │   ├── topics.json     # Topics: slug, SEO title/description, h1, HTML content
 │   └── references.json # Sources and references
-├── css/style.css       # Source stylesheet (inlined into every page by the build)
-├── js/app.js           # Theme, mobile menu, progress bar, reveal, lite video
+├── css/style.css       # Docs stylesheet (inlined into every page by the build)
+├── css/home.css        # Home-only styles (inlined only on the home page)
+├── js/app.js           # Theme, mobile menu, progress bar, contents spy, reveal, lite video
+├── js/home.js          # Home only: topic search + hero animation
 ├── fonts/              # Inter (SIL OFL 1.1), latin subset
 ├── resources/          # Images (WebP) and OG image
 └── <topic>/index.html  # Generated pages (do not edit by hand)

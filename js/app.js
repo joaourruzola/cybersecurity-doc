@@ -6,11 +6,16 @@
 	const body = d.body;
 
 	/* Links antigos (#/phishing) → páginas reais (/phishing/) */
-	const legacy = location.hash.match(/^#\/([\w-]+)$/);
-	if (legacy && (location.pathname === "/" || location.pathname.endsWith("/index.html"))) {
-		location.replace("/" + legacy[1] + "/");
-		return;
-	}
+	const legacy = () => {
+		const m = location.hash.match(/^#\/([\w-]+)$/);
+		if (m && (location.pathname === "/" || location.pathname.endsWith("/index.html"))) {
+			location.replace("/" + m[1] + "/");
+			return true;
+		}
+		return false;
+	};
+	addEventListener("hashchange", legacy);
+	if (legacy()) return;
 
 	const store = {
 		set(k, v) {
@@ -92,19 +97,25 @@
 		targets.forEach((t) => io.observe(t));
 	} else targets.forEach((t) => t.classList.add("is-visible"));
 
-	/* Brilho que segue o cursor nos cards (só com mouse) */
-	if (matchMedia("(hover:hover)").matches) {
-		d.addEventListener(
-			"pointermove",
-			(e) => {
-				const c = e.target.closest && e.target.closest(".card");
-				if (!c) return;
-				const r = c.getBoundingClientRect();
-				c.style.setProperty("--mx", e.clientX - r.left + "px");
-				c.style.setProperty("--my", e.clientY - r.top + "px");
-			},
-			{ passive: true }
+	/* Índice "Neste tópico": destaca a seção visível */
+const tocLinks = [...d.querySelectorAll(".toc a")];
+if (tocLinks.length && "IntersectionObserver" in window) {
+		const map = new Map(tocLinks.map((a) => [a.hash.slice(1), a]));
+		const spy = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((en) => {
+					if (en.isIntersecting) {
+						tocLinks.forEach((a) => a.classList.remove("on"));
+						const link = map.get(en.target.id);
+						link && link.classList.add("on");
+					}
+				}),
+			{ rootMargin: "0px 0px -70% 0px" }
 		);
+		map.forEach((_, id) => {
+			const h = d.getElementById(id);
+			h && spy.observe(h);
+		});
 	}
 
 	/* Vídeo sob demanda: o player do YouTube só carrega após o clique */

@@ -1,9 +1,10 @@
 {
 	"name": "projeto_extensao",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"description": "CiberGuard - documentação de segurança da informação",
 	"scripts": {
-		"live": "live-server"
+		"build": "node build.mjs",
+		"live": "node build.mjs && live-server"
 	},
 	"devDependencies": {
 		"live-server": "^1.2.2"

@@ -8,40 +8,43 @@ A documentation-style website that explains cybersecurity concepts for everyday 
 
 ## Features
 
-- Documentation-style layout for reading topics
-- Responsive, mobile-first layout (off-canvas menu on phones, fixed sidebar on desktop)
-- Hash routes (`#/phishing`, `#/referencias`) so links, reload and the browser back button work
-- Light/dark theme (follows the system setting on first visit, then remembers the choice)
-- Menu and cards are generated from `model/topics.json`; no icon CDN needed
-- Topics and references stored as JSON data
+- Documentation-style layout inspired by the author's portfolio: dark gradient + grain + slow "aurora", cyan accent, Inter, line-style navigation, cards with cursor glow
+- Light/dark theme (dark by default, choice is remembered)
+- Responsive, mobile-first (off-canvas menu on phones, fixed side panel on desktop)
+- One real, static page per topic (`/phishing/`, `/ransomware/`, ...) so search engines can index each one
+- SEO: unique title/description per page, canonical, Open Graph, JSON-LD (Article + BreadcrumbList), `sitemap.xml`, `robots.txt`
+- Performance: no render-blocking requests (CSS is inlined, Inter is self-hosted and subsetted, no icon/font CDN), WebP images, YouTube player loaded only on click
+- Animations use only `transform`/`opacity` and respect `prefers-reduced-motion`
 
 ## Tech Stack
 
-- HTML5
-- CSS3 (with animations)
-- Vanilla JavaScript
+- HTML5, CSS3, vanilla JavaScript (~3 KB, deferred)
+- A zero-dependency Node script (`build.mjs`) that generates the pages
 
 ## Getting Started
 
-No build step is needed. Start a local server with live reload:
+Content lives in `model/topics.json` and `model/references.json`. After editing it (or `css/style.css`), regenerate the pages and commit the result:
 
 ```bash
 npm install
-npm run live   # or any static server; opening index.html via file:// won't load the JSON
+npm run build   # regenerates index.html, /<topic>/index.html, sitemap.xml, ...
+npm run live    # build + local server with live reload
 ```
+
+Netlify needs no build command: the generated files are committed and published from the repository root.
 
 ## Project Structure
 
 ```
-├── index.html          # Main page
-├── script.js           # Page behavior
-├── css/
-│   ├── style.css       # Styles
-│   └── animations.css  # Animations
+├── build.mjs           # Static page generator (run with `npm run build`)
 ├── model/
-│   ├── topics.json     # Cybersecurity topics
+│   ├── topics.json     # Topics: slug, SEO title/description, h1, HTML content
 │   └── references.json # Sources and references
-└── resources/          # Images and other assets
+├── css/style.css       # Source stylesheet (inlined into every page by the build)
+├── js/app.js           # Theme, mobile menu, progress bar, reveal, lite video
+├── fonts/              # Inter (SIL OFL 1.1), latin subset
+├── resources/          # Images (WebP) and OG image
+└── <topic>/index.html  # Generated pages (do not edit by hand)
 ```
 
 ## Notes

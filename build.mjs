@@ -100,11 +100,6 @@ const SHIELD = `<svg viewBox="0 0 360 420" aria-hidden="true"><defs>
 <path d="M164 200h32l10 62h-52Z" fill="#07102a" stroke="url(#ss)" stroke-width="5" stroke-linejoin="round"/>
 <circle cx="180" cy="176" r="9" fill="#22d3ee"/><path d="M180 184v34" stroke="#22d3ee" stroke-width="6" stroke-linecap="round"/></svg>`;
 
-const ART = {
-	base: `<svg viewBox="0 0 200 180" aria-hidden="true"><defs><linearGradient id="b1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b9bff"/><stop offset="1" stop-color="#5b4bd6"/></linearGradient></defs><path d="M38 96C26 58 66 22 108 30c44 8 78 34 76 72-2 40-42 66-86 62-34-3-52-30-60-68Z" fill="url(#b1)"/><circle cx="46" cy="52" r="20" fill="#f43f5e"/><circle cx="168" cy="140" r="16" fill="#94a3b8" opacity=".7"/><path d="M104 44l42 16v34c0 26-18 46-42 56-24-10-42-30-42-56V60Z" fill="#fff"/><path d="m86 96 14 14 26-30" fill="none" stroke="#5b4bd6" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-	attack: `<svg viewBox="0 0 200 180" aria-hidden="true"><defs><linearGradient id="b2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs><path d="M30 100c-8-40 28-74 72-70 46 4 82 28 80 66-2 42-44 66-88 60-36-5-56-20-64-56Z" fill="url(#b2)"/><circle cx="160" cy="44" r="18" fill="#f43f5e"/><circle cx="36" cy="146" r="13" fill="#94a3b8" opacity=".7"/><rect x="52" y="70" width="96" height="66" rx="8" fill="#fff"/><path d="m56 76 44 34 44-34" fill="none" stroke="#6366f1" stroke-width="7" stroke-linejoin="round"/><path d="M146 22v38a14 14 0 0 1-28 0" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round"/><path d="M118 60l-9-9M118 60l9-9" stroke="#f43f5e" stroke-width="7" stroke-linecap="round"/></svg>`,
-	defend: `<svg viewBox="0 0 200 180" aria-hidden="true"><defs><linearGradient id="b3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><path d="M34 90c-6-38 30-66 72-62 44 4 80 30 76 70-4 40-46 62-88 56-34-5-54-26-60-64Z" fill="url(#b3)"/><circle cx="160" cy="36" r="16" fill="#fbbf24"/><circle cx="40" cy="142" r="14" fill="#a78bfa" opacity=".8"/><rect x="66" y="82" width="68" height="56" rx="10" fill="#fff"/><path d="M80 82V66a20 20 0 0 1 40 0v16" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/><circle cx="100" cy="106" r="8" fill="#3b82f6"/><path d="M100 112v12" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/></svg>`,
-};
 
 /* ------------------------------------------------------------------- peças */
 const groups = [];
@@ -205,12 +200,6 @@ const HOME_DESC =
 const searchIndex = JSON.stringify(
 	topics.map((t) => ({ t: t.topic_name, h: t.h1, u: `/${t.slug}/`, d: t.description, g: t.group }))
 );
-const FEATURES = [
-	{ g: "Segurança da Informação", art: ART.base, title: "Fundamentos", text: "O que é segurança da informação, por que ela importa e como seus dados são armazenados e transmitidos." },
-	{ g: "Ataques Comuns", art: ART.attack, title: "Ataques comuns", text: "Phishing, e-mails maliciosos, ransomware, malware e DDoS: como funcionam e como reconhecê-los." },
-	{ g: "Medidas de Prevenção", art: ART.defend, title: "Medidas de prevenção", text: "Gerenciadores de senha, autenticação de dois fatores e backups: hábitos que aumentam sua proteção." },
-];
-const bySlug = (slug) => topics.find((t) => t.slug === slug);
 
 const homeHtml = `${head({
 	title: "CiberGuard | Segurança da informação para o dia a dia",
@@ -227,7 +216,7 @@ const homeHtml = `${head({
 })}
 <body class="home">
 <a class="skip-link" href="#main">Pular para o conteúdo</a>
-<header class="hnav">${brand()}<nav aria-label="Principal"><a href="#topicos">Tópicos</a><a href="/referencias/">Referências</a><a class="keep" href="/seguranca/">Começar</a></nav></header>
+<header class="hnav">${brand()}<nav aria-label="Principal"><a href="/referencias/">Referências</a><a class="keep" href="/seguranca/">Começar</a></nav></header>
 <main id="main">
 <section class="hero">
 <img class="hero-art" src="/resources/hero.svg" alt="" width="1600" height="900" fetchpriority="low" decoding="async">
@@ -237,35 +226,13 @@ const homeHtml = `${head({
 <h1>Segurança da informação, <em>explicada</em> para todo mundo.</h1>
 <p class="hero-sub">Guia gratuito e em português sobre os ataques mais comuns e as medidas simples que protegem suas contas, seus dados e seu trabalho.</p>
 <form class="search" role="search" onsubmit="return false">${ICON_SEARCH}<input id="q" type="search" placeholder="Pesquisar tópicos (ex.: phishing, senha, backup)" aria-label="Pesquisar tópicos" autocomplete="off" aria-controls="results"><div class="results" id="results" hidden></div></form>
-<div class="hero-cta"><a class="cta primary" href="/seguranca/">Começar a ler</a><a class="cta ghost" href="/phishing/">Ver ataques comuns</a></div>
+<div class="hero-cta"><a class="cta primary" href="/seguranca/">Começar a ler<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="cta ghost" href="/phishing/">Ver ataques comuns</a></div>
 <p class="hero-note">${topics.length} tópicos · leitura rápida · sem cadastro</p>
 </div>
+<p class="hero-foot">Projeto acadêmico de extensão · <a href="${AUTHOR.url}" target="_blank" rel="noopener">${AUTHOR.name}</a></p>
 </section>
 
-<section class="block reveal" id="topicos">
-<h2>Tudo o que você precisa para navegar com segurança</h2>
-<p class="lede">Três trilhas curtas: entenda o básico, reconheça os golpes e adote hábitos que protegem de verdade.</p>
-<div class="features">
-${FEATURES.map((f) => {
-	const items = groups.find((g) => g.name === f.g).items;
-	return `<article class="feature">${f.art}<h3>${f.title}</h3><p>${f.text}</p><div class="pills">${items.map((t) => `<a href="/${t.slug}/">${esc(t.topic_name)}</a>`).join("")}</div></article>`;
-}).join("\n")}
-</div>
-</section>
-
-<section class="block reveal" aria-labelledby="nums">
-<h2 id="nums">Por que isso importa</h2>
-<p class="lede">Alguns números que aparecem nos tópicos e mostram o tamanho do problema.</p>
-<div class="stats">
-<a class="stat-card" href="/seguranca/"><b>até 300%</b><span>de aumento nos crimes cibernéticos reportados ao FBI em 2020</span><small>Fonte: IMC Grupo</small></a>
-<a class="stat-card" href="/seguranca/"><b>US$ 3,92 mi</b><span>de custo médio de uma violação de dados para a empresa</span><small>Fonte: CSO</small></a>
-<a class="stat-card" href="/ddos/"><b>+15%</b><span>de ataques DDoS no primeiro semestre de 2020</span><small>Fonte: IT Security Wire</small></a>
-</div>
-</section>
-
-<section class="start reveal"><div class="start-card"><div><h2>Pronto para começar?</h2><p>O primeiro tópico leva cerca de ${minutes(bySlug("seguranca").text)} ${minutes(bySlug("seguranca").text) === 1 ? "minuto" : "minutos"} de leitura.</p></div><a class="cta primary" href="/seguranca/">Ler “${esc(bySlug("seguranca").topic_name)}”</a></div></section>
 </main>
-${footer}
 <script type="application/json" id="search-index">${searchIndex.replace(/</g, "\\u003c")}</script>
 <script src="/js/app.js" defer></script>
 <script src="/js/home.js" defer></script>
